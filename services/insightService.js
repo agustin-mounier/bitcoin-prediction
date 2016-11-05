@@ -35,7 +35,14 @@ var getBlockHash = function(index, callback){
 }
 
 var getBlock = function(resp, callback){
-	options.path = '/insight-api/block/' + resp.blockHash;
+	var blockHash
+
+	if (resp.blockHash == undefined)
+		blockHash = resp.lastblockhash;
+	else
+		blockHash = resp.blockHash
+
+	options.path = '/insight-api/block/' + blockHash;
 	GET(options, callback);
 }
 
@@ -44,11 +51,16 @@ var getTransactionByBlock = function(blockHash, callback){
 	GET(options, callback);
 }
 
+var getLastBlock = function() {
+	options.path = '/insight-api/status?q=getLastBlockHash'
+	GET(options, getBlock)
+}
+
 module.exports.getBlockHash = getBlockHash;
 module.exports.getBlock = getBlock;
 module.exports.getBlockByIndex = getBlockByIndex;
 module.exports.getTransactionByBlock = getTransactionByBlock;
-
+module.exports.getLastBlock = getLastBlock;
 
 
 
