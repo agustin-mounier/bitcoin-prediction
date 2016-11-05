@@ -1,4 +1,4 @@
-var insightService = require('./services/insightService.js');
+var insightService = require('./insightService.js');
 
 var prediction = function(){
 	console.log(insightService.getLastBlock());
