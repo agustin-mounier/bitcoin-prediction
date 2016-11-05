@@ -1,4 +1,5 @@
-nstall zeromq
+node update
+brew install zeromq
 npm install zmq
 npm install -g bitcore-node@latest
 bitcore-node create mynode

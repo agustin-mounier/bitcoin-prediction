@@ -1,12 +1,12 @@
 var http = require('http');
-var predictionService = require('./predictionService.js');
+var predictionService = require('./services/predictionService.js');
 
 http.createServer(function (req, res) {
 	console.log(req.url);
 	if(req.method == 'GET') {
 		switch (req.url) {
 			case '/service': 
-				predictionService.function1();
+				predictionService.prediction();
 			break;
 		}
 	}
