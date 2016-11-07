@@ -9,7 +9,14 @@ var prediction = function(){
 
 var estimateFeesByHeight = function() {
 
+	var getNBlocks = function(lastBlock){
+		for(var i = lastBlock.height; i > lastBlock.height - 20; i--){
+			insightService.getBlockByIndex(i);
+		}
+	};
+	insightService.getLastBlock(getNBlocks);
 }
 
 module.exports.prediction = prediction;
+module.exports.estimateFeesByHeight = estimateFeesByHeight;
 

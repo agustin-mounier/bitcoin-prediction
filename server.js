@@ -6,7 +6,7 @@ http.createServer(function (req, res) {
 	if(req.method == 'GET') {
 		switch (req.url) {
 			case '/service': 
-				predictionService.prediction();
+				predictionService.estimateFeesByHeight();
 			break;
 		}
 	}
