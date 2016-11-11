@@ -14,21 +14,25 @@ var options = {
 var GET = function(options, callbacks) {
 	var req = http.get(options, function(res) {
 		console.log('STATUS: ' + res.statusCode);
+		console.log(callbacks);
 		res.on('data', function (data) {
-			if(callbacks == undefined) { 
+			if(callbacks === undefined) { 
 				console.log(JSON.parse(data));
 			} else if(typeof callbacks == 'function'){ 
 				callbacks(JSON.parse(data));
 			} else {
 				var currCallback = callbacks.shift();
-				currCallback(JSON.parse(data), callbacks);
+				if(currCallback == undefined)
+					console.log(JSON.parse(data));
+				else 
+					currCallback(JSON.parse(data), callbacks);
 			}
 		});
 	});
 }
 
-var getBlockByIndex = function(index) {
-	getBlockHash(index, getBlock);
+var getBlockByIndex = function(index, callback) {
+	getBlockHash(index, [getBlock, callback]);
 }
 
 var getBlockHash = function(index, callback){
@@ -59,11 +63,18 @@ var getLastBlock = function(callback) {
 	GET(options, [getBlock, callback])
 }
 
+var getTransaction = function(txId, callback) {
+	options.path = '/insight-api/tx/' + txId;
+	GET(options, callback)
+}
+
 module.exports.getBlockHash = getBlockHash;
 module.exports.getBlock = getBlock;
 module.exports.getBlockByIndex = getBlockByIndex;
 module.exports.getTransactionByBlock = getTransactionByBlock;
 module.exports.getLastBlock = getLastBlock;
+module.exports.getTransaction = getTransaction;
+
 
 
 
