@@ -1,7 +1,7 @@
 var insightService = require('./insightService.js');
 var HashMap = require('hashmap');
 var sleep = require('sleep')
-
+fs = require('fs')
 
 var prediction = function(){
 	//insightService.getBlockHash(12354);
@@ -30,6 +30,9 @@ var estimateFeesByHeight = function() {
 			console.log(tx.size);
 			return;
 		}
+		var toPrint = key.toString() + ' ' + tx.fees.toString() + ' ' + tx.size.toString();
+		console.log(toPrint);
+		fs.appendFile('data.txt', toPrint + '\n', function (err) {});
 
 		if(feesByBlock.has(key)){
 			var currValue = feesByBlock.get(key);
@@ -40,11 +43,6 @@ var estimateFeesByHeight = function() {
 			feesByBlock.set(key, value);
 			procesed.set(key, 1);
 		}
-		console.log("fees para 0 bloques");
-		console.log(feesByBlock.get(0));
-		console.log("cantidad de 0 bloques");
-		console.log(procesed.get(0));
-		console.log(procesed.get(1));
 	}
 
 
@@ -67,7 +65,7 @@ var estimateFeesByHeight = function() {
 	
 
 	var getNBlocks = function(lastBlock){
-		for(var i = lastBlock.height; i > lastBlock.height - 2; i--){
+		for(var i = lastBlock.height; i > lastBlock.height - 1; i--){
 			insightService.getBlockByIndex(i, getTxInBlock);
 		}
 	};
