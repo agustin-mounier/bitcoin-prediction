@@ -49,11 +49,22 @@ var estimateFeesByHeight = function() {
 
 
 	var getTxInBlock = function(block){
-		var txs = block.tx.length > 15 ? 15 : block.tx.length;
-		for(var i = 0; i < txs; i++){
-			insightService.getTransaction(block.tx[i], storeResult);
+		//var txs = block.tx.length > 15 ? 15 : block.tx.length;
+		var i = 1;
+
+		var refreshIntervalId = setInterval( function() { 
+												iterateTxs(i, block.tx, refreshIntervalId);
+												i++; 
+												if(i === block.tx.length){
+       												clearInterval(refreshIntervalId);
+   												} }, 5000 );
+
+		var iterateTxs = function(currTx, tx){
+			console.log("currTx " + currTx);
+			insightService.getTransaction(tx[currTx], storeResult);
 		}
 	}
+	
 
 	var getNBlocks = function(lastBlock){
 		for(var i = lastBlock.height; i > lastBlock.height - 2; i--){

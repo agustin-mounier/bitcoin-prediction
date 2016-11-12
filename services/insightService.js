@@ -13,8 +13,6 @@ var options = {
 
 var GET = function(options, callbacks) {
 	var req = http.get(options, function(res) {
-		console.log('STATUS: ' + res.statusCode);
-		console.log(callbacks);
 		res.on('data', function (data) {
 			if(callbacks === undefined) { 
 				console.log(JSON.parse(data));
