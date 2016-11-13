@@ -42,13 +42,13 @@ var getBlockHash = function(index, callback){
 	
 }
 
-var getBlock = function(resp, callback){
-	var blockHash
+var getBlock = function(blockHash, callback){
+	// var blockHash
 
-	if (resp.blockHash == undefined)
-		blockHash = resp.lastblockhash;
-	else
-		blockHash = resp.blockHash
+	// if (resp.blockHash == undefined)
+	// 	blockHash = resp.lastblockhash;
+	// else
+	// 	blockHash = resp.blockHash
 
 	options.path = '/api/block/' + blockHash;
 	GET(options, callback);

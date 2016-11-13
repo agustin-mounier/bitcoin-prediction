@@ -27,12 +27,15 @@ socket.on('connect', function() {
 // Join the room.
 socket.emit('subscribe', room);
 })
-
+var txs = 0;
 socket.on(txEventToListenTo, function(data) {
-	console.log("Found transaction");
+	if(txs % 10 == 0)
+		console.log("Found 10 transactions");
+	txs++;
 	predictionService.txHandler(data.txid);
 });
 
 socket.on(blockEventToListenTo, function(blockHash) {
+	console.log("Found BLOCK");
 	predictionService.blockHandler(blockHash);
 });
