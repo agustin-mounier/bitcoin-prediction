@@ -1,4 +1,5 @@
 var insightService = require('./insightService.js');
+var interpolatingPolynomial = require('interpolating-polynomial');
 var HashMap = require('hashmap');
 var sleep = require('sleep')
 fs = require('fs')
@@ -43,8 +44,6 @@ var storeResult = function(tx) {
 		feesByBlock.set(key, value);
 		procesed.set(key, 1);
 	}
-
-	txMap.remove(tx.txid);
 }
 
 
@@ -58,11 +57,12 @@ var getTxInBlock = function(block){
 												 saveMaps();
 											if(i === block.tx.length){
    												clearInterval(refreshIntervalId);
-												} }, 3000 );
+												} }, 5000 );
 
 	var iterateTxs = function(currTx, tx){
 		if(txMap.has(tx[currTx])) {
 			console.log("currTx " + currTx);
+			txMap.remove(tx[currTx]);
 			insightService.getTransaction(tx[currTx], storeResult);
 		}
 	}
@@ -71,7 +71,7 @@ var getTxInBlock = function(block){
 		fs.unlinkSync('feesByBlock.txt');
 		console.log('successfully deleted feesByBlock.txt');
 		fs.unlinkSync('procesed.txt');
-		console.log('successfully deleted feesByBlock.txt');
+		console.log('successfully deleted processed.txt');
 
 		var keys = feesByBlock.keys();
 		for(var i = 0; i < keys.length; i++) {
@@ -102,6 +102,27 @@ var blockHandler = function (blockHash) {
 	insightService.getBlock(blockHash, getTxInBlock)
 }
 
+var estimateFee = function(nBlocks, txSize) {
+	if(nBlocks <= 0){
+		return 0;
+	}
+
+	var points = [];
+	var fee;
+	var feePerByte = feesByBlock.get(nBlocks);
+	if(!feePerByte){
+		feesByBlock.forEach(function(value, key) {
+    		push([parseInt(key), parseFloat(value)]);
+		});
+		f = interpolatingPolynomial(points);
+		fee = f(nBlocks);
+	} else {
+		fee = feePerByte;
+	}
+
+	return txSize ? fee*txSize: fee;
+}
+
 var initialize = function() {
 
 	var feesByBlockContent = fs.readFileSync('feesByBlock.txt', 'utf8');
@@ -123,6 +144,7 @@ var initialize = function() {
 }
 
 module.exports.txHandler = txHandler;
+module.exports.estimateFee = estimateFee;
 module.exports.blockHandler = blockHandler;
 module.exports.prediction = prediction;
 module.exports.estimateFeesByHeight = estimateFeesByHeight;

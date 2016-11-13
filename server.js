@@ -1,20 +1,25 @@
 var http = require('http');
 var https = require('https');
+var urlParser = require('url-parse');
 var predictionService = require('./services/predictionService.js');
 var io = require('socket.io-client');
 
 http.createServer(function (req, res) {
-	console.log(req.url);
 	if(req.method == 'GET') {
-		switch (req.url) {
-			case '/service': 
-				predictionService.estimateFeesByHeight();
-			break;
+		var url = urlParser(req.url, true);
+		if(url.pathname == '/estimateFee'){
+			var queryString = url.query;
+			var nBlocks = queryString.nBlocks;
+			var txSize = queryString.txSize;
+			var fee = predictionService.estimateFee(nBlocks, txSize);
+			res.writeHead(200, {'Content-Type': 'text/plain'});
+			res.end(fee);
+		}
+		else {
+			res.status(400);
+			res.end();
 		}
 	}
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.end('Hello World\n');
-	
 }).listen(8124, "127.0.0.1");
 console.log('Server running at http://127.0.0.1:8124/');
 
@@ -29,9 +34,6 @@ socket.emit('subscribe', room);
 })
 var txs = 0;
 socket.on(txEventToListenTo, function(data) {
-	if(txs % 10 == 0)
-		console.log("Found 10 transactions");
-	txs++;
 	predictionService.txHandler(data.txid);
 });
 
