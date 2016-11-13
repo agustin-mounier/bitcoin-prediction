@@ -39,3 +39,5 @@ socket.on(blockEventToListenTo, function(blockHash) {
 	console.log("Found BLOCK");
 	predictionService.blockHandler(blockHash);
 });
+
+predictionService.initialize();

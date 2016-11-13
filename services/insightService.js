@@ -16,19 +16,31 @@ var GET = function(options, callbacks) {
     		res.on('data', function(resData) {
         	body += resData;
     		});
+    		res.on('error', function(errorData) {
+    			console.log(errorData);
+    		});
     		res.on('end', function() {
+    			var parseJson;
+    			try {
+    				parseJson = JSON.parse(body);
+    			} catch (e) {
+    				return false;
+    			}
 				if(callbacks === undefined) { 
-					console.log(JSON.parse(body));
+					console.log(parseJson);
 				} else if(typeof callbacks == 'function'){ 
-					callbacks(JSON.parse(body));
+					callbacks(parseJson);
 				} else {
 					var currCallback = callbacks.shift();
 					if(currCallback == undefined)
-						console.log(JSON.parse(body));
+						console.log(parseJson);
 					else 
-						currCallback(JSON.parse(body), callbacks);
+						currCallback(parseJson, callbacks);
 				}
 			});
+	});
+	req.on('error', function (e){
+		console.log(e);
 	});
 }
 
@@ -75,6 +87,7 @@ module.exports.getBlockByIndex = getBlockByIndex;
 module.exports.getTransactionByBlock = getTransactionByBlock;
 module.exports.getLastBlock = getLastBlock;
 module.exports.getTransaction = getTransaction;
+
 
 
 

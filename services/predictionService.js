@@ -53,15 +53,35 @@ var getTxInBlock = function(block){
 
 	var refreshIntervalId = setInterval( function() { 
 											iterateTxs(i, block.tx);
-											i++; 
+											i++;
+											if(i % 70 == 0)
+												 saveMaps();
 											if(i === block.tx.length){
    												clearInterval(refreshIntervalId);
-												} }, 1000 );
+												} }, 3000 );
 
 	var iterateTxs = function(currTx, tx){
 		if(txMap.has(tx[currTx])) {
 			console.log("currTx " + currTx);
 			insightService.getTransaction(tx[currTx], storeResult);
+		}
+	}
+
+	var saveMaps = function() {
+		fs.unlinkSync('feesByBlock.txt');
+		console.log('successfully deleted feesByBlock.txt');
+		fs.unlinkSync('procesed.txt');
+		console.log('successfully deleted feesByBlock.txt');
+
+		var keys = feesByBlock.keys();
+		for(var i = 0; i < keys.length; i++) {
+			var mapEntry = keys[i] + ' ' + feesByBlock.get(keys[i]);
+			fs.appendFile('feesByBlock.txt', mapEntry + ';', function (err) {});
+		}
+		var keys2 = procesed.keys();
+		for(var j = 0; j < keys2.length; j++) {
+			var mapEntry2 = keys2[j] + ' ' + procesed.get(keys2[j]);
+			fs.appendFile('procesed.txt', mapEntry2 + ';', function (err) {});
 		}
 	}
 }
@@ -82,8 +102,30 @@ var blockHandler = function (blockHash) {
 	insightService.getBlock(blockHash, getTxInBlock)
 }
 
+var initialize = function() {
+
+	var feesByBlockContent = fs.readFileSync('feesByBlock.txt', 'utf8');
+	console.log(feesByBlockContent);
+
+	var entries = feesByBlockContent.split(";");
+	for(var i = 0; i < entries.length; i++) {
+		var keyvalue = entries[i].split(' ');
+		feesByBlock.set(keyvalue[0], keyvalue[1]);
+	}
+
+	var procesedContent = fs.readFileSync('procesed.txt', 'utf8');
+	var entries2 = procesedContent.split(";");
+	for(var j = 0; j < entries2.length; j++) {
+		var keyvalue2 = entries2[j].split(' ');
+		procesed.set(keyvalue2[0], keyvalue2[1]);
+	}
+	
+}
+
 module.exports.txHandler = txHandler;
 module.exports.blockHandler = blockHandler;
 module.exports.prediction = prediction;
 module.exports.estimateFeesByHeight = estimateFeesByHeight;
+module.exports.initialize = initialize;
+
 
