@@ -57,7 +57,7 @@ var estimateFeesByHeight = function() {
 												i++; 
 												if(i === block.tx.length){
        												clearInterval(refreshIntervalId);
-   												} }, 5000 );
+   												} }, 1000 );
 
 		var iterateTxs = function(currTx, tx){
 			console.log("currTx " + currTx);
@@ -67,7 +67,7 @@ var estimateFeesByHeight = function() {
 	
 
 	var getNBlocks = function(lastBlock){
-		for(var i = lastBlock.height; i > lastBlock.height - 2; i--){
+		for(var i = lastBlock.height; i > lastBlock.height - 10; i--){
 			insightService.getBlockByIndex(i, getTxInBlock);
 		}
 	};

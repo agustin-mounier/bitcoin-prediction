@@ -14,16 +14,22 @@ var options = {
 var GET = function(options, callbacks) {
 	var req = http.get(options, function(res) {
 		res.on('data', function (data) {
+			var jsonData
+			try {
+				jsonData = JSON.parse(data);
+			} catch (e) {
+				return false;
+			}
 			if(callbacks === undefined) { 
-				console.log(JSON.parse(data));
+				console.log(jsonData);
 			} else if(typeof callbacks == 'function'){ 
 				callbacks(JSON.parse(data));
 			} else {
 				var currCallback = callbacks.shift();
 				if(currCallback == undefined)
-					console.log(JSON.parse(data));
+					console.log(jsonData);
 				else 
-					currCallback(JSON.parse(data), callbacks);
+					currCallback(jsonData, callbacks);
 			}
 		});
 	});
