@@ -65,7 +65,7 @@ var estimateFeesByHeight = function() {
 	
 
 	var getNBlocks = function(lastBlock){
-		for(var i = lastBlock.height; i > lastBlock.height - 1; i--){
+		for(var i = lastBlock.height; i > lastBlock.height - 2; i--){
 			insightService.getBlockByIndex(i, getTxInBlock);
 		}
 	};
