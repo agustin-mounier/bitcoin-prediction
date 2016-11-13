@@ -4,9 +4,6 @@ var sleep = require('sleep')
 fs = require('fs')
 
 var prediction = function(){
-	//insightService.getBlockHash(12354);
-	//insightService.getBlockByIndex(0);
-	//insightService.getTransactionByBlock('00000000c78cd1009c04e276688e7766a68a111b20a8f850475e3ce53d93cd0e');
 	insightService.getLastBlock();
 }
 
@@ -73,6 +70,8 @@ var estimateFeesByHeight = function() {
 	insightService.getLastBlock(getNBlocks);
 }
 
+
+
 function sleep(time, callback) {
     var stop = new Date().getTime();
     while(new Date().getTime() < stop + time) {
@@ -81,6 +80,25 @@ function sleep(time, callback) {
     callback();
 }
 
+var txMap = new HashMap();
+var currentBlock = 0;
+
+var txHandler = function (txid) {
+	txMap.set(txid, currentBlock);
+}
+
+var checkTransaction = function (block) {
+	txMap.forEach(function(txid, blockNumber) {
+    	console.log(txid + " : " + blockNumber);
+	});
+}
+
+var blockHandler = function (blockid) {
+	currentBlock += 1;
+}
+
+module.exports.txHandler = txHandler;
+module.exports.blockHandler = blockHandler;
 module.exports.prediction = prediction;
 module.exports.estimateFeesByHeight = estimateFeesByHeight;
 
