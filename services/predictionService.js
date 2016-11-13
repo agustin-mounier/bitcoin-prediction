@@ -49,17 +49,17 @@ var storeResult = function(tx) {
 
 
 var getTxInBlock = function(block){
-	var i = 1;
+	var i = 0;
 
 	var refreshIntervalId = setInterval( function() { 
-											iterateTxs(i, block.tx, refreshIntervalId);
+											iterateTxs(i, block.tx);
 											i++; 
 											if(i === block.tx.length){
    												clearInterval(refreshIntervalId);
 												} }, 1000 );
 
 	var iterateTxs = function(currTx, tx){
-		if(txMap.has(tx)) {
+		if(txMap.has(tx[currTx])) {
 			console.log("currTx " + currTx);
 			insightService.getTransaction(tx[currTx], storeResult);
 		}
