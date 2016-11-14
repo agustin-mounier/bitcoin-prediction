@@ -145,8 +145,6 @@ var initialize = function() {
 module.exports.txHandler = txHandler;
 module.exports.estimateFee = estimateFee;
 module.exports.blockHandler = blockHandler;
-module.exports.prediction = prediction;
-module.exports.estimateFeesByHeight = estimateFeesByHeight;
 module.exports.initialize = initialize;
 
 
