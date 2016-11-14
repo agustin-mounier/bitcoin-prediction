@@ -1,7 +1,6 @@
 var insightService = require('./insightService.js');
 var interpolatingPolynomial = require('interpolating-polynomial');
 var HashMap = require('hashmap');
-var sleep = require('sleep')
 fs = require('fs')
 
 var feesByBlock = new HashMap();
@@ -9,15 +8,6 @@ var procesed = new HashMap();
 
 var txMap = new HashMap();
 var lastBlockHeight;
-
-var prediction = function(){
-
-}
-
-var estimateFeesByHeight = function() {
-	
-}
-
 
 var storeResult = function(tx) {
 

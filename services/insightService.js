@@ -55,14 +55,12 @@ var getBlockHash = function(index, callback){
 }
 
 var getBlock = function(blockHash, callback){
-	// var blockHash
-
-	// if (resp.blockHash == undefined)
-	// 	blockHash = resp.lastblockhash;
-	// else
-	// 	blockHash = resp.blockHash
-
 	options.path = '/api/block/' + blockHash;
+	GET(options, callback);
+}
+
+var getBlockAux = function(blockHash, callback){
+	options.path = '/api/block/' + blockHash.lastblockhash;
 	GET(options, callback);
 }
 
@@ -73,7 +71,7 @@ var getTransactionByBlock = function(blockHash, callback){
 
 var getLastBlock = function(callback) {
 	options.path = '/api/status?q=getLastBlockHash'
-	GET(options, [getBlock, callback])
+	GET(options, [getBlockAux, callback])
 }
 
 var getTransaction = function(txId, callback) {

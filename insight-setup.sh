@@ -1,9 +1,8 @@
 node update
-brew install zeromq
-npm install zmq
-npm install -g bitcore-node@latest
-bitcore-node create mynode
-cd mynode
-bitcore-node install insight-api
-bitcore-node start
-
+npm install url-parse
+npm install http
+npm install https
+npm install interpolating-polynomial
+npm install hashmap
+npm install socket.io-client
+npm install fs
