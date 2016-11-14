@@ -16,8 +16,8 @@ http.createServer(function (req, res) {
 			res.end(JSON.stringify(fee));
 		}
 		else {
-			res.status(400);
-			res.end('');
+			res.writeHead(400, {'Content-Type': 'text/plain'});
+			res.end('Bad Request');
 		}
 	}
 }).listen(8124, "127.0.0.1");
