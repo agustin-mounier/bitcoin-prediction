@@ -16,16 +16,14 @@ var storeResult = function(tx) {
 	var value = tx.fees / tx.size;
 
 	if(isNaN(value)) {
-		console.log("NaN detected -----");
-		console.log(tx.blocktime);
-		console.log(tx.time);
-		console.log(tx.fees);
-		console.log(tx.size);
+		console.log("<<<< NaN detected >>>>");
+		console.log(tx.blocktime + ' ' + tx.time + ' ' + tx.fees + ' ' + tx.size);
 		return;
 	}
-	var toPrint = key.toString() + ' ' + tx.fees.toString() + ' ' + tx.size.toString();
+	var toLog = key.toString() + ' ' + tx.fees.toString() + ' ' + tx.size.toString();
+	var toPrint = 'blocks: ' + key.toString() + ' fee: ' + tx.fees.toString() + ' size: ' + tx.size.toString();
 	console.log(toPrint);
-	fs.appendFile('data.txt', toPrint + '\n', function (err) {});
+	fs.appendFile('data.txt', toLog + '\n', function (err) {});
 
 	if(feesByBlock.has(key)){
 		var currValue = feesByBlock.get(key);
@@ -59,7 +57,6 @@ var getTxInBlock = function(block){
 
 	var iterateTxs = function(currTx, tx){
 		if(txMap.has(tx[currTx])) {
-			console.log("currTx " + currTx);
 			insightService.getTransaction(tx[currTx], storeResult);
 		}
 	}
@@ -139,7 +136,7 @@ var initialize = function() {
 
 	insightService.getLastBlock(function(block) {
 		lastBlockHeight = block.height;
-		console.log(block.height);
+		console.log('Current block height: ' + block.height);
 	});
 	
 }
