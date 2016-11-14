@@ -7,11 +7,12 @@ var feesByBlock = new HashMap();
 var procesed = new HashMap();
 
 var txMap = new HashMap();
+var blockHeights = new HashMap();
 var lastBlockHeight;
 
 var storeResult = function(tx) {
 
-	var key = lastBlockHeight - txMap.get(tx.txid);// cantidad de bloques q tardo en procesarse la tx
+	var key = blockHeights.get(tx.blockhash) - txMap.get(tx.txid);// cantidad de bloques q tardo en procesarse la tx
 	var value = tx.fees / tx.size;
 
 	if(isNaN(value)) {
@@ -43,6 +44,8 @@ var storeResult = function(tx) {
 var getTxInBlock = function(block){
 	
 	lastBlockHeight = block.height;
+	blockHeights.set(block.hash, block.height);
+
 	var i = 0;
 
 	var refreshIntervalId = setInterval( function() { 
@@ -92,7 +95,6 @@ var checkTransaction = function (block) {
 
 var blockHandler = function (blockHash) {
 	console.log(blockHash);
-	currentBlock += 1;
 	insightService.getBlock(blockHash, getTxInBlock)
 }
 
@@ -145,8 +147,6 @@ var initialize = function() {
 module.exports.txHandler = txHandler;
 module.exports.estimateFee = estimateFee;
 module.exports.blockHandler = blockHandler;
-module.exports.prediction = prediction;
-module.exports.estimateFeesByHeight = estimateFeesByHeight;
 module.exports.initialize = initialize;
 
 
