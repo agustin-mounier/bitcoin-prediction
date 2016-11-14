@@ -13,11 +13,11 @@ http.createServer(function (req, res) {
 			var txSize = queryString.txSize;
 			var fee = predictionService.estimateFee(nBlocks, txSize);
 			res.writeHead(200, {'Content-Type': 'text/plain'});
-			res.end(fee);
+			res.end(JSON.stringify(fee));
 		}
 		else {
 			res.status(400);
-			res.end();
+			res.end('');
 		}
 	}
 }).listen(8124, "127.0.0.1");
