@@ -1,3 +1,6 @@
 node-modules/*
 mynode/*
 .DS_Store
+data.txt
+feesByBlock.txt
+procesed.txt
