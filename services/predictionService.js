@@ -8,7 +8,7 @@ var feesByBlock = new HashMap();
 var procesed = new HashMap();
 
 var txMap = new HashMap();
-var currentBlock = 0;
+var lastBlockHeight;
 
 var prediction = function(){
 
@@ -20,7 +20,8 @@ var estimateFeesByHeight = function() {
 
 
 var storeResult = function(tx) {
-	var key = currentBlock - txMap.get(tx.txid);// cantidad de bloques q tardo en procesarse la tx
+
+	var key = lastBlockHeight - txMap.get(tx.txid);// cantidad de bloques q tardo en procesarse la tx
 	var value = tx.fees / tx.size;
 
 	if(isNaN(value)) {
@@ -48,6 +49,8 @@ var storeResult = function(tx) {
 
 
 var getTxInBlock = function(block){
+	
+	lastBlockHeight = block.height;
 	var i = 0;
 
 	var refreshIntervalId = setInterval( function() { 
@@ -87,7 +90,7 @@ var getTxInBlock = function(block){
 }
 
 var txHandler = function (txid) {
-	txMap.set(txid, currentBlock);
+	txMap.set(txid, lastBlockHeight);
 }
 
 var checkTransaction = function (block) {
@@ -140,6 +143,11 @@ var initialize = function() {
 		var keyvalue2 = entries2[j].split(' ');
 		procesed.set(keyvalue2[0], keyvalue2[1]);
 	}
+
+	insightService.getLastBlock(function(block) {
+		lastBlockHeight = block.height;
+		console.log(block.height);
+	});
 	
 }
 
