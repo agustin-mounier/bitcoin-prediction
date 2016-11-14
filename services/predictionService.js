@@ -44,6 +44,8 @@ var storeResult = function(tx) {
 		feesByBlock.set(key, value);
 		procesed.set(key, 1);
 	}
+
+	txMap.remove(tx.txid);
 }
 
 
@@ -62,7 +64,6 @@ var getTxInBlock = function(block){
 	var iterateTxs = function(currTx, tx){
 		if(txMap.has(tx[currTx])) {
 			console.log("currTx " + currTx);
-			txMap.remove(tx[currTx]);
 			insightService.getTransaction(tx[currTx], storeResult);
 		}
 	}
@@ -112,7 +113,7 @@ var estimateFee = function(nBlocks, txSize) {
 	var feePerByte = feesByBlock.get(nBlocks);
 	if(!feePerByte){
 		feesByBlock.forEach(function(value, key) {
-    		push([parseInt(key), parseFloat(value)]);
+    		points.push([parseInt(key), parseFloat(value)]);
 		});
 		f = interpolatingPolynomial(points);
 		fee = f(nBlocks);
@@ -129,14 +130,14 @@ var initialize = function() {
 	console.log(feesByBlockContent);
 
 	var entries = feesByBlockContent.split(";");
-	for(var i = 0; i < entries.length; i++) {
+	for(var i = 0; i < entries.length - 1; i++) {
 		var keyvalue = entries[i].split(' ');
 		feesByBlock.set(keyvalue[0], keyvalue[1]);
 	}
 
 	var procesedContent = fs.readFileSync('procesed.txt', 'utf8');
 	var entries2 = procesedContent.split(";");
-	for(var j = 0; j < entries2.length; j++) {
+	for(var j = 0; j < entries2.length - 1; j++) {
 		var keyvalue2 = entries2[j].split(' ');
 		procesed.set(keyvalue2[0], keyvalue2[1]);
 	}
